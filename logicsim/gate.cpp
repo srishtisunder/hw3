@@ -97,8 +97,21 @@ NotGate::NotGate(Wire* in, Wire* out) : Gate(1, out) {
 // NOT Gate logic update
 Event* NotGate::update(uint64_t current_time)
 {
-    char input_state = m_inputs[0]->getState();
-    char output_state = (input_state == '0') ? '1' : (input_state == '1') ? '0' : 'X';
+    char output_state = 'X';  // Default to 'X' if no valid input is found
+
+    for (auto w : m_inputs) 
+    {
+        char in = w->getState();
+        
+        if (in == '0') {
+            output_state = '1';
+            break;
+        }
+        else if (in == '1') {
+            output_state = '0';
+            break;
+        }
+    }
 
     Event* e = nullptr;
     if (output_state != m_current_state)
